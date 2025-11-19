@@ -4,21 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.example.myapplicationnew.ui.theme.MyApplicationNewTheme
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
-
+import androidx.compose.ui.unit.sp
+import com.example.myapplicationnew.ui.theme.MyApplicationNewTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +26,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
-
             }
         }
     }
@@ -39,30 +33,65 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    androidx.compose.foundation.layout.Column(
+    var lastX by remember { mutableStateOf<Float?>(null) }
+    var lastY by remember { mutableStateOf<Float?>(null) }
+    var captureEnabled by remember { mutableStateOf(false) }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+            .pointerInput(captureEnabled) {
+                if (captureEnabled) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val position = event.changes.first().position
+                            lastX = position.x
+                            lastY = position.y
+                        }
+                    }
+                }
+            },
+        contentAlignment = Alignment.Center
     ) {
 
-        androidx.compose.material3.Button(onClick = {
-            MyAccessibilityService.instance?.performGlobalAction(
-                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
-            )
-        }) {
-            Text("HOME")
-        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = {
+                MyAccessibilityService.instance?.performGlobalAction(
+                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
+                )
+            }) {
+                Text("HOME")
+            }
 
-        androidx.compose.material3.Button(onClick = {
-            MyAccessibilityService.instance?.performGlobalAction(
-                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
-            )
-        }) {
-            Text("VOLTAR")
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(onClick = {
+                MyAccessibilityService.instance?.performGlobalAction(
+                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
+                )
+            }) {
+                Text("VOLTAR")
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(onClick = { captureEnabled = !captureEnabled }) {
+                Text(if (captureEnabled) "DESATIVAR" else "PEGAR TOQUE")
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            if (lastX != null && lastY != null) {
+                Text(
+                    text = "X: ${lastX!!.toInt()}\n\nY: ${lastY!!.toInt()}",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
