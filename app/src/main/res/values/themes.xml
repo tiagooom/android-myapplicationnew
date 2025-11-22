@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Tema padrão do app -->
     <style name="Theme.MyApplicationNew" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Tema transparente para a overlay -->
+    <style name="Theme.Transparent" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
 </resources>

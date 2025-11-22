@@ -6,6 +6,7 @@ import android.accessibilityservice.GestureDescription
 import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
+import android.content.Intent
 
 class MyAccessibilityService : AccessibilityService() {
 
@@ -43,4 +44,11 @@ class MyAccessibilityService : AccessibilityService() {
     fun postDelayed(delay: Long, action: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(action, delay)
     }
+
+    fun showOverlay() {
+        val intent = Intent(this, TransparentOverlayActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
 }
