@@ -1,11 +1,10 @@
 package com.example.myapplicationnew
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -23,27 +22,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Verifica permissão para overlay
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivity(intent)
-        }
-
         setContent {
-            // ==== Estados (dentro de setContent) ====
-            var lastX by remember { mutableStateOf<Float?>(null) }
-            var lastY by remember { mutableStateOf<Float?>(null) }
-            var captureEnabled by remember { mutableStateOf(false) }
 
+            val lastX by CoordinatesHolder.lastX.collectAsState()
+            val lastY by CoordinatesHolder.lastY.collectAsState()
+
+            var captureEnabled by remember { mutableStateOf(false) }
             var boxOffsetX by remember { mutableStateOf(0f) }
             var boxOffsetY by remember { mutableStateOf(0f) }
 
-            val targetX = 932
-            val targetY = 1593
-
+            val targetX = 663
+            val targetY = 1631
             val context = this@MainActivity
 
             Box(
@@ -56,15 +45,14 @@ class MainActivity : ComponentActivity() {
                     }
                     .pointerInput(captureEnabled) {
                         if (captureEnabled) {
-                            awaitPointerEventScope {
-                                while (true) {
-                                    val event = awaitPointerEvent()
-                                    val pos = event.changes.first().position
 
-                                    // Coordenada real na tela:
-                                    lastX = boxOffsetX + pos.x
-                                    lastY = boxOffsetY + pos.y
-                                }
+                            detectTapGestures { offset ->
+
+                                val realX = boxOffsetX + offset.x
+                                val realY = boxOffsetY + offset.y
+
+                                // 👉 Aqui sim é o lugar certo
+                                CoordinatesHolder.update(realX, realY)
                             }
                         }
                     },
@@ -106,7 +94,6 @@ class MainActivity : ComponentActivity() {
                         MyAccessibilityService.instance?.performGlobalAction(
                             android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
                         )
-
                         MyAccessibilityService.instance?.postDelayed(1000) {
                             MyAccessibilityService.instance?.tap(targetX, targetY)
                         }
@@ -116,33 +103,27 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Botão HOME + Overlay
                     Button(onClick = {
-                        // Vai para a Home
                         val home = Intent(Intent.ACTION_MAIN).apply {
                             addCategory(Intent.CATEGORY_HOME)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         }
                         context.startActivity(home)
 
-                        // Abre overlay
                         val intent = Intent(context, TransparentOverlayActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
                     }) {
-                        Text("Home + Overlay2")
+                        Text("Home + Overlay")
                     }
 
                     Spacer(modifier = Modifier.height(40.dp))
 
-                    // Exibe coordenadas se existirem
-                    if (lastX != null && lastY != null) {
-                        Text(
-                            text = "X: ${lastX!!.toInt()}\nY: ${lastY!!.toInt()}",
-                            fontSize = 40.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    Text(
+                        text = "X: ${lastX.toInt()}\nY: ${lastY.toInt()}",
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
