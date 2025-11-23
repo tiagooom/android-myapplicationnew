@@ -164,36 +164,30 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(40.dp))
 
                     Button(onClick = {
+                        MyAccessibilityService.instance?.swipe(
+                            startX = 540,   // meio da tela (ajuste se precisar)
+                            startY = 10,    // bem no topo da tela
+                            endX = 540,     // arrasta no mesmo eixo X
+                            endY = 1400,    // até o meio da tela
+                            duration = 300  // velocidade do swipe
+                        )
+                    }) {
+                        Text("ATIVAR GRAVADOR")
+                    }
+
+                    Button(onClick = {
                         MyAccessibilityService.instance?.performGlobalAction(
                             android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
                         )
+
                         MyAccessibilityService.instance?.postDelayed(1000) {
-                            MyAccessibilityService.instance?.tap(172, 697)
-                        }
-
-                        MyAccessibilityService.instance?.postDelayed(5000) {
-                            MyAccessibilityService.instance?.tap(572, 2210)
-                        }
-
-                        MyAccessibilityService.instance?.postDelayed(6000) {
-                            MyAccessibilityService.instance?.tap(236, 1230)
-                        }
-
-                        MyAccessibilityService.instance?.postDelayed(7000) {
-                            MyAccessibilityService.instance?.tap(870, 1579)
-                        }
-
-                        MyAccessibilityService.instance?.postDelayed(8000) {
-                            MyAccessibilityService.instance?.tap(894, 1244)
-                        }
-
-                        MyAccessibilityService.instance?.postDelayed(9000) {
-                            MyAccessibilityService.instance?.tap(183, 1416)
+                            MyAccessibilityService.instance?.tap(705, 756)
                         }
 
                     }) {
-                        Text("CLICAR EM CONJ DE COORDENADAS")
+                        Text("CLICAR NO TABLET FISICO")
                     }
+
 
                     Text(
                         text = "X: ${lastX.toInt()}\nY: ${lastY.toInt()}",

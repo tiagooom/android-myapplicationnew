@@ -45,6 +45,26 @@ class MyAccessibilityService : AccessibilityService() {
         Handler(Looper.getMainLooper()).postDelayed(action, delay)
     }
 
+    fun swipe(startX: Int, startY: Int, endX: Int, endY: Int, duration: Long) {
+        val path = Path().apply {
+            moveTo(startX.toFloat(), startY.toFloat())
+            lineTo(endX.toFloat(), endY.toFloat())
+        }
+
+        val gesture = GestureDescription.Builder()
+            .addStroke(
+                GestureDescription.StrokeDescription(
+                    path,
+                    0,
+                    duration
+                )
+            )
+            .build()
+
+        dispatchGesture(gesture, null, null)
+    }
+
+
     fun showOverlay() {
         val intent = Intent(this, TransparentOverlayActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
