@@ -104,20 +104,96 @@ class MainActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Button(onClick = {
-                        val home = Intent(Intent.ACTION_MAIN).apply {
-                            addCategory(Intent.CATEGORY_HOME)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                        context.startActivity(home)
+                        // Abre apps recentes
+                        MyAccessibilityService.instance?.performGlobalAction(
+                            android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS
+                        )
 
-                        val intent = Intent(context, TransparentOverlayActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(intent)
+                        // Volta automaticamente para o último app
+                        MyAccessibilityService.instance?.postDelayed(200) {
+                            MyAccessibilityService.instance?.performGlobalAction(
+                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS
+                            )
+                        }
+
+                        // Agora espera o app abrir COMPLETAMENTE
+                        MyAccessibilityService.instance?.postDelayed(700) {
+                            val intent = Intent(context, TransparentOverlayActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        }
                     }) {
-                        Text("Home + Overlay")
+                        Text("Voltar + Overlay")
+                    }
+
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(onClick = {
+                        MyAccessibilityService.instance?.performGlobalAction(
+                            android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
+                        )
+                        MyAccessibilityService.instance?.postDelayed(1000) {
+                            MyAccessibilityService.instance?.tap(172, 697)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(5000) {
+                            MyAccessibilityService.instance?.tap(572, 2210)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(6000) {
+                            MyAccessibilityService.instance?.tap(236, 1230)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(7000) {
+                            MyAccessibilityService.instance?.tap(870, 1579)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(8000) {
+                            MyAccessibilityService.instance?.tap(894, 1244)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(9000) {
+                            MyAccessibilityService.instance?.tap(183, 1416)
+                        }
+
+                    }) {
+                        Text("CLICAR EM CONJ DE COORDENADAS")
                     }
 
                     Spacer(modifier = Modifier.height(40.dp))
+
+                    Button(onClick = {
+                        MyAccessibilityService.instance?.performGlobalAction(
+                            android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
+                        )
+                        MyAccessibilityService.instance?.postDelayed(1000) {
+                            MyAccessibilityService.instance?.tap(172, 697)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(5000) {
+                            MyAccessibilityService.instance?.tap(572, 2210)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(6000) {
+                            MyAccessibilityService.instance?.tap(236, 1230)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(7000) {
+                            MyAccessibilityService.instance?.tap(870, 1579)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(8000) {
+                            MyAccessibilityService.instance?.tap(894, 1244)
+                        }
+
+                        MyAccessibilityService.instance?.postDelayed(9000) {
+                            MyAccessibilityService.instance?.tap(183, 1416)
+                        }
+
+                    }) {
+                        Text("CLICAR EM CONJ DE COORDENADAS")
+                    }
 
                     Text(
                         text = "X: ${lastX.toInt()}\nY: ${lastY.toInt()}",
