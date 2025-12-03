@@ -1,5 +1,6 @@
 package com.example.myapplicationnew
 
+import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -286,12 +287,36 @@ class MainActivity : ComponentActivity() {
                             android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
                         )
 
+                        // 0 - swipe tela Home (esquerda → direita)
+                        t += 1800
+                        service.postDelayed(t) {
+                            service.swipe(
+                                startX = 600,
+                                startY = 660,
+                                endX = 150,
+                                endY = 660,
+                                duration = 250
+                            )
+                        }
+
+                        // 0 - swipe tela Home (esquerda → direita)
+                        t += 1800
+                        service.postDelayed(t) {
+                            service.swipe(
+                                startX = 600,
+                                startY = 660,
+                                endX = 150,
+                                endY = 660,
+                                duration = 250
+                            )
+                        }
+
                         // 1 - abrir app
                         t += 1000
                         service.postDelayed(t) { service.tap(705, 756) }
 
                         // 2 - clicar na lupa
-                        t += 2000
+                        t += 3000
                         service.postDelayed(t) { service.tap(30, 516) }
 
                         // 3 - campo de pesquisa
@@ -307,7 +332,7 @@ class MainActivity : ComponentActivity() {
                         service.postDelayed(t) { service.tap(299, 99) }
 
                         // 6 - foto
-                        t += 1000
+                        t += 2000
                         service.postDelayed(t) { service.tap(386, 159) }
 
                         // 7 - 3 pontos
@@ -316,7 +341,7 @@ class MainActivity : ComponentActivity() {
 
                         // 8 - desbloquear 1
                         t += 1000
-                        service.postDelayed(t) { service.tap(522, 900) }
+                        service.postDelayed(t) { service.tap(522, 906) }
 
                         // 9 - desbloquear 2
                         t += 1000
@@ -366,144 +391,191 @@ class MainActivity : ComponentActivity() {
                         t += 2500
                         service.postDelayed(t) { service.tap(188, 124) }
 
-                        // 18 - Gravando 10s
-                        t += 75000
-
-                        // 19 - Abrir notificações novamente
-                        service.postDelayed(t) {
-                            service.swipe(
-                                startX = 540,
-                                startY = 10,
-                                endX = 540,
-                                endY = 1400,
-                                duration = 300
-                            )
-                        }
-
-                        // 20 - Parar gravação
-                        t += 1000
-                        service.postDelayed(t) { service.tap(410, 170) }
-
-                        // 21 - Iniciar nova gravação
-                        t += 5000
-                        service.postDelayed(t) { service.tap(410, 170) }
-
-                        // 22 - Confirmar Iniciar
-                        t += 1000
-                        service.postDelayed(t) { service.tap(729, 378) }
-
-                        // 23 - Gravando 1s
-                        t += 4000
-
-                        // 24 - Abrir notificações
-                        service.postDelayed(t) {
-                            service.swipe(
-                                startX = 540,
-                                startY = 10,
-                                endX = 540,
-                                endY = 1400,
-                                duration = 300
-                            )
-                        }
-
-                        // 25 - Finalizar gravação
-                        t += 1000
-                        service.postDelayed(t) { service.tap(410, 170) }
-
-                        // 26 - Limpar notificação
-                        t += 2000
-                        service.postDelayed(t) {
-                            service.swipe(
-                                startX = 200,
-                                startY = 306,
-                                endX = 600,
-                                endY = 306,
-                                duration = 300
-                            )
-                        }
-
-                        // 27 - Voltar
-                        t += 1200
-                        service.postDelayed(t) {
-                            service.performGlobalAction(
-                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
-                            )
-                        }
-
-                        // 28 - 3 pontos novamente
-                        t += 1000
-                        service.postDelayed(t) { service.tap(772, 53) }
-
-                        // 29 - bloquear
-                        t += 1500
-                        service.postDelayed(t) { service.tap(532, 906) }
-
-                        // 30 - bloquear 2
-                        t += 1200
-                        service.postDelayed(t) { service.tap(580, 1137) }
-
-                        // 31 - voltar
+                        // 9s → buscar texto
                         t += 1000
                         service.postDelayed(t) {
-                            service.performGlobalAction(
-                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
-                            )
-                        }
+                            val root = service.rootInActiveWindow
+                            val achou = root?.let { service.buscarTexto(it, "qr code") } ?: false
 
-                        // 32 - voltar novamente
-                        t += 1000
-                        service.postDelayed(t) {
-                            service.performGlobalAction(
-                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
-                            )
-                        }
+                            var extraDelay = 0L
 
-                        // 33 - campo de pesquisa
-                        t += 1000
-                        service.postDelayed(t) { service.tap(169, 41) }
+                            if (achou) {
 
-                        // 34 - excluir pesquisa
-                        t += 800
-                        service.postDelayed(t) { service.tap(776, 144) }
+                                // 27 - Voltar
+                                extraDelay += 1200
+                                service.postDelayed(extraDelay) {
+                                    service.performGlobalAction(
+                                        android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
+                                    )
+                                }
 
-                        // 35 - abrir apps recentes
-                        t += 1000
-                        service.postDelayed(t) {
-                            service.performGlobalAction(
-                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS
-                            )
-                        }
+                                // 23 - Gravando 1s e abrindo notificacao pra parar
+                                extraDelay += 1000
+                                service.postDelayed(extraDelay) {
+                                    service.swipe(
+                                        startX = 540,
+                                        startY = 10,
+                                        endX = 540,
+                                        endY = 1400,
+                                        duration = 300
+                                    )
+                                }
+                            } else {
 
-                        // 36 - arrastar app pra cima para fechar
-                        t += 1700
-                        service.postDelayed(t) {
-                            service.swipe(
-                                startX = 540,
-                                startY = 900,
-                                endX = 540,
-                                endY = 200,
-                                duration = 300
-                            )
-                        }
+                                // 20 - tap para nao bloqueio
+                                extraDelay += 35000
+                                service.postDelayed(extraDelay) { service.tap(564, 10) }
 
-                        // 37 - voltar para Home
-                        t += 1400
-                        service.postDelayed(t) {
-                            service.performGlobalAction(
-                                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
-                            )
-                        }
+                                // 18 - Gravando 70s e Abrir notificações novamente
+                                extraDelay += 29500
+                                service.postDelayed(extraDelay) {
+                                    service.swipe(
+                                        startX = 540,
+                                        startY = 10,
+                                        endX = 540,
+                                        endY = 1400,
+                                        duration = 300
+                                    )
+                                }
 
-                        // 38 - swipe tela Home (esquerda → direita)
-                        t += 1800
-                        service.postDelayed(t) {
-                            service.swipe(
-                                startX = 150,
-                                startY = 1000,
-                                endX = 900,
-                                endY = 1000,
-                                duration = 300
-                            )
+                                // 20 - Parar gravação
+                                extraDelay += 1000
+                                service.postDelayed(extraDelay) { service.tap(410, 170) }
+
+                                // 21 - Iniciar nova gravação
+                                extraDelay += 5000
+                                service.postDelayed(extraDelay) { service.tap(410, 170) }
+
+                                // 22 - Confirmar Iniciar
+                                extraDelay += 1000
+                                service.postDelayed(extraDelay) { service.tap(729, 378) }
+
+                                // 23 - Gravando 1s e abrindo notificacao pra parar
+                                extraDelay += 4000
+                                service.postDelayed(extraDelay) {
+                                    service.swipe(
+                                        startX = 540,
+                                        startY = 10,
+                                        endX = 540,
+                                        endY = 1400,
+                                        duration = 300
+                                    )
+                                }
+
+                            }
+
+                            // 25 - Finalizar gravação
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) { service.tap(410, 170) }
+
+                            // 26 - Limpar notificação
+                            extraDelay += 3000
+                            service.postDelayed(extraDelay) {
+                                service.swipe(
+                                    startX = 200,
+                                    startY = 306,
+                                    endX = 600,
+                                    endY = 306,
+                                    duration = 300
+                                )
+                            }
+
+                            // 27 - Voltar
+                            extraDelay += 1200
+                            service.postDelayed(extraDelay) {
+                                service.performGlobalAction(
+                                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
+                                )
+                            }
+
+                            // 28 - 3 pontos novamente
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) { service.tap(772, 53) }
+
+                            // 29 - bloquear
+                            extraDelay += 1500
+                            service.postDelayed(extraDelay) { service.tap(532, 906) }
+
+                            // 30 - bloquear 2
+                            extraDelay += 1200
+                            service.postDelayed(extraDelay) { service.tap(580, 1137) }
+
+                            // 31 - voltar
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) {
+                                service.performGlobalAction(
+                                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
+                                )
+                            }
+
+                            // 32 - voltar novamente
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) {
+                                service.performGlobalAction(
+                                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
+                                )
+                            }
+
+                            // 33 - campo de pesquisa
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) { service.tap(169, 41) }
+
+                            // 34 - excluir pesquisa
+                            extraDelay += 800
+                            service.postDelayed(extraDelay) { service.tap(776, 144) }
+
+                            // 35 - abrir apps recentes
+                            extraDelay += 1000
+                            service.postDelayed(extraDelay) {
+                                service.performGlobalAction(
+                                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS
+                                )
+                            }
+
+                            // 36 - arrastar app pra cima para fechar
+                            extraDelay += 1700
+                            service.postDelayed(extraDelay) {
+                                service.swipe(
+                                    startX = 540,
+                                    startY = 900,
+                                    endX = 540,
+                                    endY = 200,
+                                    duration = 300
+                                )
+                            }
+
+                            // 36 - arrastar novamente app pra cima para fechar
+                            extraDelay += 1700
+                            service.postDelayed(extraDelay) {
+                                service.swipe(
+                                    startX = 540,
+                                    startY = 900,
+                                    endX = 540,
+                                    endY = 200,
+                                    duration = 300
+                                )
+                            }
+
+                            // 37 - voltar para Home
+                            extraDelay += 1400
+                            service.postDelayed(extraDelay) {
+                                service.performGlobalAction(
+                                    android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
+                                )
+                            }
+
+                            // 38 - swipe tela Home (esquerda → direita)
+                            extraDelay += 1800
+                            service.postDelayed(extraDelay) {
+                                service.swipe(
+                                    startX = 150,
+                                    startY = 1000,
+                                    endX = 900,
+                                    endY = 1000,
+                                    duration = 300
+                                )
+                            }
+
                         }
 
                     }) {

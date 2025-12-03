@@ -7,6 +7,7 @@ import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
 import android.content.Intent
+import android.view.accessibility.AccessibilityNodeInfo
 
 class MyAccessibilityService : AccessibilityService() {
 
@@ -71,4 +72,21 @@ class MyAccessibilityService : AccessibilityService() {
         startActivity(intent)
     }
 
+    fun procurarTextoNaTela(texto: String): Boolean {
+        val root = rootInActiveWindow ?: return false
+        return buscarTexto(root, texto)
+    }
+
+    fun buscarTexto(node: AccessibilityNodeInfo?, texto: String): Boolean {
+        if (node == null) return false
+
+        val nodeText = node.text?.toString() ?: ""
+        if (nodeText.contains(texto, ignoreCase = true)) return true
+
+        for (i in 0 until node.childCount) {
+            if (buscarTexto(node.getChild(i), texto)) return true
+        }
+
+        return false
+    }
 }
