@@ -336,7 +336,7 @@ class MainActivity : ComponentActivity() {
                         service.postDelayed(t) { service.tap(386, 159) }
 
                         // 7 - 3 pontos
-                        t += 1000
+                        t += 2000
                         service.postDelayed(t) { service.tap(772, 53) }
 
                         // 8 - desbloquear 1
