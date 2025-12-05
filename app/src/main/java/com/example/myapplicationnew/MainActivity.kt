@@ -320,51 +320,60 @@ class MainActivity : ComponentActivity() {
                                         duration = 300
                                     )
                                 }
+
+                                extraDelay = executarFinal(service, extraDelay)
                             } else {
-
-                                // 20 - tap para nao bloqueio
+                                //aguardar 35 segs pra primeira checagem
                                 extraDelay += 35000
-                                service.postDelayed(extraDelay) { service.tap(564, 10) }
-
-                                // 18 - Gravando 70s e Abrir notificações novamente
-                                extraDelay += 29500
                                 service.postDelayed(extraDelay) {
-                                    service.swipe(
-                                        startX = 540,
-                                        startY = 10,
-                                        endX = 540,
-                                        endY = 1400,
-                                        duration = 300
-                                    )
-                                }
 
-                                // 20 - Parar gravação
-                                extraDelay += 1000
-                                service.postDelayed(extraDelay) { service.tap(410, 170) }
+                                    val root2 = service.rootInActiveWindow
+                                    val achou2 = root2?.let { service.buscarTexto(it, "Seguindo") } ?: false
 
-                                // 21 - Iniciar nova gravação
-                                extraDelay += 5000
-                                service.postDelayed(extraDelay) { service.tap(410, 170) }
+                                    extraDelay = 0L
 
-                                // 22 - Confirmar Iniciar
-                                extraDelay += 1000
-                                service.postDelayed(extraDelay) { service.tap(729, 378) }
+                                    //se nao achar a palavra seguindo adiciona mais 30 segs de gravacao
+                                    if (!achou2){
+                                        extraDelay += 29500
+                                    }
 
-                                // 23 - Gravando 1s e abrindo notificacao pra parar
-                                extraDelay += 4000
-                                service.postDelayed(extraDelay) {
-                                    service.swipe(
-                                        startX = 540,
-                                        startY = 10,
-                                        endX = 540,
-                                        endY = 1400,
-                                        duration = 300
-                                    )
+                                    // 18 - swipe para terminar gravacao em 35 ou 60 segs
+                                    service.postDelayed(extraDelay) {
+                                        service.swipe(
+                                            startX = 540,
+                                            startY = 10,
+                                            endX = 540,
+                                            endY = 1400,
+                                            duration = 300
+                                        )
+                                    }
+
+                                    // 20 - Parar gravação
+                                    extraDelay += 1000
+                                    service.postDelayed(extraDelay) { service.tap(410, 170) }
+
+                                    // 21 - Iniciar nova gravação
+                                    extraDelay += 5000
+                                    service.postDelayed(extraDelay) { service.tap(410, 170) }
+
+                                    // 22 - Confirmar Iniciar
+                                    extraDelay += 1000
+                                    service.postDelayed(extraDelay) { service.tap(729, 378) }
+
+                                    // 23 - Gravando 1s e abrindo notificacao pra parar
+                                    extraDelay += 4000
+                                    service.postDelayed(extraDelay) {
+                                        service.swipe(
+                                            startX = 540,
+                                            startY = 10,
+                                            endX = 540,
+                                            endY = 1400,
+                                            duration = 300
+                                        )
+                                    }
+                                    extraDelay = executarFinal(service, extraDelay)
                                 }
                             }
-
-                            extraDelay = executarFinal(service, extraDelay)
-
                         }
 
                     }) {
